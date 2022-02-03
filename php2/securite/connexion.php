@@ -6,8 +6,11 @@ $pdo = new PDO('mysql:host=localhost;dbname=securite', 'root', '', array(
 // en cas d'envoi de données dans le formulaire (if($_POST))
 if($_POST){
     // avec cette requete, je vais aller comparer le pseudo envoyé dans le formulaire avec un pseudo similaire existant en BDD
+    $_POST['pseudo'] = htmlentities($_POST['pseudo'], ENT_QUOTES);
+    $_POST['mdp'] = htmlentities($_POST['mdp'], ENT_QUOTES);
+
     $rechercheMembre = $pdo->query("SELECT * FROM membre WHERE pseudo = '$_POST[pseudo]' AND mdp = '$_POST[mdp]' ");   
-    
+
     $membre = $rechercheMembre->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -48,8 +51,8 @@ if($_POST){
         <?php if(!empty($membre)): ?>
             <?= print_r($rechercheMembre) ?>
             <h3 class="text-success ms-5">Félicitations, vous etes connecté</h3>
-            <p class="ms-5">Vous etes : <?= $membre['pseudo'] ?></p>
-            <p class="ms-5">Votre email est : <?= $membre['email'] ?></p>
+            <p class="ms-5">Vous etes: <?= $membre['pseudo'] ?></p>
+            <p class="ms-5">Votre email est: <?= $membre['email'] ?></p>
         <?php else: ?>
             <h3 class="text-danger ms-5">Votre connexion a échoué</h3>
         <?php endif ?>
