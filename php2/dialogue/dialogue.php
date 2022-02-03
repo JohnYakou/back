@@ -27,7 +27,9 @@ if($_POST){
     }
 }
 
-$requeteCommentaires = $pdo->query("SELECT * FROM commentaire");
+// $requeteCommentaires = $pdo->query("SELECT * FROM commentaire ORDER BY date_enregistrement DESC");
+
+$requeteCommentaires = $pdo->query("SELECT pseudo, message, DATE_FORMAT(date_enregistrement, '%d/%m/%Y') AS dateFr, DATE_FORMAT(date_enregistrement, '%H:%i:%s') AS heureFr FROM commentaire ORDER BY date_enregistrement DESC");
 
 ?>
 
@@ -64,14 +66,17 @@ $requeteCommentaires = $pdo->query("SELECT * FROM commentaire");
     
 </form>
 
+
 <div class="ms-5">
-    <h2>Tous les messages envoyés</h2>
+    <h2><?= $requeteCommentaires->rowCount() ?> messages envoyés</h2>
+    <?php while($commentaire = $requeteCommentaires->fetch(PDO::FETCH_ASSOC)): ?>
     <div class="blockquote col-md-6 offset-md-1 p-5 text-justify shadow mt-5 bg-white
     rounded">
-        <h3 class="mb-5">Par : . Posté le :</h3>
+        <h3 class="mb-5">Par : <?= $commentaire['pseudo'] ?> . Posté le : <?= $commentaire['dateFr'] ?> à <?= $commentaire['heureFr'] ?></h3>
         <p>Commentaire :</p>
-        <p></p>
+        <p><?= $commentaire['message'] ?></p>
     </div>
+    <?php endwhile; ?>
 </div>
     
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

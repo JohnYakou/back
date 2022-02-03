@@ -947,7 +947,39 @@ echo "Le véhicule " . $vehicule['title'] . " est disponible dans la ville de " 
     </tbody>
 </table>
 
-<button type="button" class="btn btn-primary my-2"><a class='text-light' href='dialogue/dialogue.php' target='_blank'>Vers la page dialogue</button>
+<a class='text-light' href='dialogue/dialogue.php' target='_blank'><button type="button" class="btn btn-primary my-2">Vers la page dialogue</button></a>
+
+<!-- Chapitre 17 - Securite -->
+
+<!-- Securisatio en FRONT -->
+<!-- La verification des champs, leur controle, ne peut etre fait en FRONT / HTML, comme ci-dessous le maxlength et le pattern -->
+<!-- Il suffira au hacker d'ouvrir l'inspecteur, le supprimer dans la partie de droite, et cet obstacle sera levé -->
+<form class="my-3">
+    <div class="mb-3">
+        <label for="pseudo" class="form-label">Pseudo</label>
+        <input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Votre Pseudo" maxlength="20" pattern="[a-zA-Z0-9._-]{3,20}" title="Les lettres de l'alphabet, minuscules comme majuscules sont autorisées ainsi que les chiffres. Les caractères spéciaux ; ., - et _ sont autorisées. Tout autre autre caractère sera refusé.">
+    </div>
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+</form>
+
+<!-- Verification de champs en traitement PHP -->
+<!-- Vous trouverez des verifications de champs dans le projet locations de voitures ou alors dans dialogue.php. Référer vous pour celle deja codées -->
+
+<!-- Verification du champs email, non-travaillée dans les deux projets juste citées -->
+
+<?php
+// La fonction filter_var, en lui donnant en premier parametre le champs concerné, puis en second parametre FILTER_VALIDATE_EMAIL, va verifier si l'input correspond a un format d'adresse email ou non
+if(!isset($_POST['email']) || filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+    // $erreur .= "<p>Erreur format email</p>";
+}
+?>
+
+<!-- Requete preparées -->
+<!-- Elles permettent une meilleure securisation de l'envoie de donnee vers la BDD -->
+<!-- Il faut la priviligier a la methode query (ne garder celle-ci que pour une requete de selection) -->
+<!-- Nous avons fait plusieurs requetes preparés dans le projet locations de voitures et dialogue.php. Référez-vous ! -->
+
+<a class='text-light' href='securite/connexion.php' target='_blank'><button type="button" class="btn btn-primary my-2">Vers la page connexion (securite)</button></a>
 
 <!-- Cas particulier pour afficher des valeurs au format differents -->
 <!-- Si je dois afficher une photo, ou afficher un prix, je vais devoir faire des conditions pour les differents cas de figure -->
@@ -969,29 +1001,4 @@ echo "Le véhicule " . $vehicule['title'] . " est disponible dans la ville de " 
 </tr>
 <?php endwhile; ?> -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<?php
-require_once('inc/footer.inc.php');
+<?php require_once('inc/footer.inc.php');
