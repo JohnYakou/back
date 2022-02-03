@@ -879,6 +879,9 @@ $pdo = new PDO('mysql:host=localhost;dbname=voiture', 'root', '', array(
 // get_class_methods me permet de visualiser les differentes methodes predefinies de ma class PDO, qui seront utilisables, pretes à l'emploi
 echo "<pre>"; print_r(get_class_methods($pdo)); echo "</pre>";
 
+// --------------------------------------------------------
+// Methode query(select)
+
 // Je selectionne dans ma BDD, à la table vehicule, toutes les valeurs du vehicule dont le titre sera egal à FIAT
 $afficheVehicules = $pdo->query("SELECT * FROM vehicule WHERE title = 'fiat'");
 
@@ -889,7 +892,93 @@ echo "<pre>"; var_dump($afficheVehicules); echo "</pre>";
 // Meme si c'est possible de faire des INSERT INTO, UPDATE ou DELETE avec la methode Query, il faut la l'utiliser seulement pour le SELECT
 // Si je dois modifier ma BDD (avec une isertion, modification ou suppression), il faudra faire une requete prepare avec prepare()
 
+// --------------------------------------------------------
+// Methode fetch()
+// $afficherVehicules est la variable à laquelle on a affecté le resultat de la requete query (elle stocke les informations detous les vehicules concernes par la selection)
+// La methode fetch va a present recherche en BDD tous les vehicules concernes par la selection, et affecter ce resultat dans la variable $vehicule
+// PDO::FETCH_ASSOC permet de cibler la colonne par son nom (FETCH_BOTH permet de faire la recherche sur le nom ET l'indice de la colonne. FETCH_NUM permet de faire cette recherche seulement sur l'indice de la colonne)
+$vehicule = $afficheVehicules->fetch(PDO::FETCH_ASSOC);
+// print_r pour afficher les resultats (de maniere non-conventionnelle (reservé au dev., non permis au utilisateur)) stockés dans $vehicule
+echo "<pre>"; print_r($vehicule); echo "</pre>";
+
+// Le resultat du fetch etant stocke dans $vehicule, c'est maintenant cette variable que je vais utiliser pour appeler les valeurs qui m'interessent
+// Je les cible en crochetant a l'indice qui m'interesse
+echo "Le véhicule " . $vehicule['title'] . " est disponible dans la ville de " . $vehicule['city'] . " au prix de " . $vehicule['price'] . " €/j";
+
 ?>
+
+<table class="table">
+<?php $afficheVoiture = $pdo->query("SELECT * FROM vehicule") ?>
+    <thead>
+        <tr>
+            <!-- Cette boucle for va me permettre de generer autant de th qu'il y a de nombre de colonnes en BDD -->
+            <!-- Pour cela, j'utilise la fonction predefinie columnCount -->
+            <!-- Ma boucle for() s'executera tant que je trouve une nouvelle colonne -->
+            <?php for($i = 0; $i < $afficheVoiture->columnCount(); $i++) : 
+            // une fois ce nombre determine, je vais recupere les metas contenus dans mon tableau en BDD, et j'affecte ce resultat à $colonne
+                $colonne = $afficheVoiture->getColumnMeta($i) ?>
+                <!-- <?php echo "<pre>";  var_dump($colonne); echo "</pre>";?> -->
+                <!-- La meta qui m'interesse, c'est name, c'est pour cela que c'est celle la que je crochete (je peux le voir dans le print_r du dessus. A chaque name correspond le nom de ma colonne). Elle va me permettre de recuperer toutes les valeurs, les noms de mes colonnes -->
+                <th><?= $colonne['name'] ?></th>
+            <!-- Fin de la boucle for pour les <th> -->
+            <?php endfor ?>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Cette while va permettre de recuperer chaque vehicule, chaque ligne qu'elle va rencontrer en BDD -->
+        <!-- Je stocke dans $voiture tout ce que fetch(), parametré avec FETCH_ASSOC, va trouver comme information selectionnée -->
+        <?php while($voiture = $afficheVoiture->fetch(PDO::FETCH_ASSOC)) : ?>
+        <tr>
+            <!-- Cette foreach recupere chaque valeur qu'elle va rencontrer dans chaque ligne du tableau (vehicule) -->
+            <!-- Je donne un alis (as) à $voiture, c'est $key (key comme indice). Et je fais correspondre à $key (avec =>) la variable $value -->
+            <!-- Et c'est cette $value que je positionne dans le <td> pour afficher les valeurs trouvée en BDD -->
+            <?php foreach($voiture as $key => $value) : ?>
+                <!-- Cette condition if() va donner un affichage different pour les prix -->
+                <!-- Si l'indice est == à 'price', alors je veux que le signe € s'affiche a droite de la valeur recupere (le prix) -->
+                <?php if($key == 'price') : ?>
+                    <td><?= $value ?> €</td>
+                <?php else : ?>
+                    <!-- Dans tous les autres cas de figures, je veux un affichage normal -->
+                    <td><?= $value ?></td>
+                <?php endif ?>
+            <?php endforeach ?>
+        </tr>
+        <?php endwhile; ?>
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-primary my-2"><a class='text-light' href='dialogue/dialogue.php' target='_blank'>Vers la page dialogue</button>
+
+<!-- Cas particulier pour afficher des valeurs au format differents -->
+<!-- Si je dois afficher une photo, ou afficher un prix, je vais devoir faire des conditions pour les differents cas de figure -->
+<!-- <?php while($produit = $afficheProduit->fetch(PDO::FETCH_ASSOC)): ?>
+<tr>
+    <?php foreach($produit as $key => $value): ?>
+        Comme au dessus, je veux un affichage different si le nom de la colonne est == à photo
+        <?php if($key == 'photo') : ?>
+            Dans ce cas, je ne veux pas recuperer la valeur dans la BDD (c'est une chaine de caractere contenant le nom du fichier photo)
+            Je veux que cette valeur soit renseignée dans l'attribut src de ma balise img pour servir de chemin pour afficher ma photo (avec le nom du dossier /img/ dans laquelle elle est, qui la précède
+            <td><img src="img/<?= $value ?>"></td>
+        <?php elseif($key == 'prix') : ?>
+            Meme cas de figure que pour la location de voiture plus en haut
+            <td><?= $value ?> €</td>
+        <?php else: ?>
+            <td><?= $value ?></td>
+        <?php endif; ?>
+    <?php endforeach ?>
+</tr>
+<?php endwhile; ?> -->
+
+
+
+
+
+
+
+
+
+
+
 
 
 
