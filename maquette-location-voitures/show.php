@@ -2,7 +2,7 @@
 
 // Je vérifie que je reçois dans l'URL (avec $_GET) une valeur (avec isset), qu'elle est de type numérique (avec ctype_digit) et qu'elle ne soit pas inférieur à 1 (la valeur minimal pour un id auto-incrémenté)
 if(!isset($_GET['id']) || !ctype_digit($_GET['id']) || $_GET['id'] < 1){
-    // Si ce n'est pas le cas, j'empache d'acceder à la page show.php avec une mauvaise valeure en renvoyant vers la page list.php
+    // Si ce n'est pas le cas, j'empeche d'acceder à la page show.php avec une mauvaise valeure en renvoyant vers la page list.php
     // On renvoi vers une autre page avec un header('location:versAutrePage.php')
     // header étant la fonction prédifinie, et location le parametre à lui donner, complété du nom du fichier vers lequel on veut rediriger
     header('location:list.php');

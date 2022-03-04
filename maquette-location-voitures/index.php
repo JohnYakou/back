@@ -30,7 +30,7 @@ $afficheVehicules = $pdo->query("SELECT * FROM vehicule ORDER BY created_at DESC
         </tr>
     </thead>
     <tbody>
-        <?php while($vehicule = $afficheVehicules->fetch (PDO::FETCH_ASSOC)): ?>
+        <?php while($vehicule = $afficheVehicules->fetch (PDO::FETCH_ASSOC)) : ?>
             <tr>
                 <td>
                     <strong><?= strtoupper($vehicule['title'])?></strong>
