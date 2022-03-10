@@ -1,0 +1,24 @@
+ CRUD est l'acronyme de Create - Read - Update - Delete
+ Equivalent à Créer - Lire (page show) - Modifier - Supprimer
+ Fonctionnalités classiques pour un site dynamique, pour inter-agir avec une BDD
+
+ Arborescence de notre CRUD
+
+ CRUD
+
+    dossier app
+        fichier config.xml
+
+    dossier controller
+        fichier Controller.php
+
+    dossier model
+        fichier EntityRepository.php
+
+    dossier view
+        fichiers On les codera au fur et a mesure
+
+    fichier index.php
+        On l'appelera provisoirement index1.php, pour éviter l'effet porte d'entrée automatique et devoir aller chercher les autres fichiers seulement via l'URL. On le renommera index.php à la fin du développement de notre projet
+
+    fichier autoload.php
