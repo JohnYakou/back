@@ -18,10 +18,11 @@ class EntityRepository{
             // Dans ce cas là, on va devoir se connecter à la BDD
             // Je vais tester la connexion à ma BDD dans un try / catch
             // Cela me permettre de cibler plus vite pourquoi je n'ai pas réussi à me connecter à la BDD
+            // On enleve le '../' devant app car index est meme niveau que app
             try{
-                $xml = simplexml_load_file('../app/config.xml');
+                $xml = simplexml_load_file('app/config.xml');
 
-                echo "<pre>"; print_r($xml); echo "</pre>";
+                // echo "<pre>"; print_r($xml); echo "</pre>";
 
                 // Je dois récupèrer la valeur de table config.xml pour l'affecter à ma public propriété table (en pointant vers elle avec $this)
                 $this->table = $xml->table;
@@ -29,11 +30,11 @@ class EntityRepository{
                 try{
                     $this->pdo = new \PDO("mysql:host=$xml->host; dbname=$xml->dbname", "$xml->user", "$xml->password", array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 
-                    echo "Connexion établie";
+                    // echo "Connexion établie";
                 }
 
                 catch(\PDOException $erreur){
-
+                    echo "Erreur base de donnée inconnue / " . $erreur->getMessage() . "<br> Le problème vient peut-être du fichier config.xml. Vérifier les données contenues <br> Problème à la ligne " . $erreur->getLine() . " du fichier " . $erreur->getFile() . "<br>";
                 }
             }
 
@@ -48,6 +49,27 @@ class EntityRepository{
         // En dehors du if, car c'est le else
         // Si on deja connecté (le else), alors on va retourner les informations contenus dans $pdo
         return $this->pdo;
+    }
+
+    public function selectAllEntityRepo(){
+        $data = $this->getPdo()->query("SELECT * FROM $this->table");
+
+        // La même chose en procédural
+        // $data = $pdo->query('SELECT * FROM employe');
+
+        // Après avoir fait le queryr je fais obligatoirement le fetch (pour recupérer le résultat du query)
+        $afficheTousEmployes = $data->fetchAll(\PDO::FETCH_ASSOC);
+        // Je retourne le resultat
+        return $afficheTousEmployes;
+    }
+
+    // Fonction pour récupérer les entetes des colonnes
+    public function getFields(){
+        $data = $this->getPdo()->query("DESC " . $this->table);
+
+        $afficheEntetes = $data->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $afficheEntetes;
     }
 }
 
